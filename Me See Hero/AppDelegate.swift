@@ -1,10 +1,4 @@
-//
-//  AppDelegate.swift
-//  Me See Hero
-//
-//  Created by mac on 2019/10/31.
-//  Copyright © 2019 ydu1717. All rights reserved.
-//
+
 
 import UIKit
 import CoreData
@@ -16,7 +10,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+
+        let navigationController = UINavigationController(rootViewController: ViewController.init())
+        self.window = UIWindow()
+        self.window?.frame = UIScreen.main.bounds
+        self.window?.rootViewController = navigationController
+        self.window?.makeKeyAndVisible()
+        
         return true
     }
 
