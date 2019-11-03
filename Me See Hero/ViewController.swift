@@ -4,7 +4,7 @@ import CoreData
 
 let screenWidth  = UIScreen.main.bounds.size.width
 let screenHeight = UIScreen.main.bounds.size.height
-let rowHeight = 60
+let rowHeight = 80
 func NavigationBarHeight() -> CGFloat {
     
     let mainWindow : UIWindow = ((UIApplication.shared.delegate?.window)!)!
@@ -38,9 +38,41 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         initUI()
-        self.dataArray.add("")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        refresh()
+    }
+    
+    func refresh() -> Void {
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        let managedObjectContext = appDelegate.persistentContainer.viewContext
         
-
+        let entity = NSEntityDescription.entity(forEntityName: "HeroModel", in: managedObjectContext)
+        
+        let request = NSFetchRequest<HeroModel>(entityName: "HeroModel")
+        request.fetchOffset = 0
+        request.entity = entity
+        
+        do{
+            let results:[AnyObject]? = try managedObjectContext.fetch(request)
+            dataArray.removeAllObjects()
+            for model:HeroModel in results as! [HeroModel]{
+                dataArray.add(model)
+            }
+            if dataArray.count > 0 {
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.init(uptimeNanoseconds: UInt64(0.1))) {
+                    self.tableview.reloadData()
+                }
+            }
+            else {
+                addHeroModel()
+            }
+            
+        } catch{
+            print("Failed to fetch data.")
+        }
     }
 }
 
