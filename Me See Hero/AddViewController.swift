@@ -50,7 +50,7 @@ class AddViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = NSLocalizedString("add", comment: "")
+        title = NSLocalizedString("Add", comment: "")
         view.backgroundColor = UIColor.white
         view.addSubview(self.tableview)
         imagePicker.delegate = self
@@ -124,7 +124,7 @@ class AddViewController: UIViewController {
         model.zodiacSign      = zodiacSign.text
         model.cityofresidence = cityofresidence.text
         model.locationtitle   = locationtitle.text
-        model.uuid            = NSUUID.init(uuidString: "\(millisecond)") as UUID?
+        model.uuid            = millisecond
         
         do{
             try managedObjectContext.save()
@@ -151,7 +151,7 @@ class AddViewController: UIViewController {
     }
 }
 
-// MARK : UITableViewDataSource
+// MARK: UITableViewDataSource
 extension AddViewController : UITableViewDelegate,UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -238,7 +238,7 @@ extension AddViewController : UITableViewDelegate,UITableViewDataSource {
             self.imagePicker.modalPresentationStyle = .fullScreen
             
             DispatchQueue.main.async {
-                let alert = UIAlertController.init(title: NSLocalizedString("", comment: ""), message: "message", preferredStyle: UIAlertController.Style.alert)
+                let alert = UIAlertController.init(title: NSLocalizedString("", comment: ""), message: "", preferredStyle: UIAlertController.Style.actionSheet)
                 
                 alert.addAction(UIAlertAction.init(title: NSLocalizedString("Photo Gallery", comment: ""), style: UIAlertAction.Style.default, handler: { (action) in
                     self.imagePicker.sourceType = .photoLibrary
@@ -253,6 +253,13 @@ extension AddViewController : UITableViewDelegate,UITableViewDataSource {
                 alert.addAction(UIAlertAction.init(title: NSLocalizedString("Cancel", comment: ""), style: UIAlertAction.Style.cancel, handler: { (action) in
                     
                 }))
+                let cell = self.tableview.cellForRow(at: indexPath)
+
+                let popover : UIPopoverPresentationController = alert.popoverPresentationController!
+                popover.sourceView = cell
+                popover.sourceRect = cell!.bounds
+                popover.permittedArrowDirections = .any
+                
                 self.present(alert, animated: true) {
                     
                 }
@@ -277,7 +284,7 @@ extension AddViewController : UITableViewDelegate,UITableViewDataSource {
     }
 }
 
-// MARK : UIPickerViewDelegate
+// MARK: UIPickerViewDelegate
 extension AddViewController : UIPickerViewDelegate, UIPickerViewDataSource {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -320,7 +327,7 @@ extension AddViewController : UIPickerViewDelegate, UIPickerViewDataSource {
         return 45.0
     }
 }
-
+// MARK: UIImagePickerControllerDelegate
 extension AddViewController : UIImagePickerControllerDelegate,UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let pickedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
@@ -330,7 +337,7 @@ extension AddViewController : UIImagePickerControllerDelegate,UINavigationContro
         self.dismiss(animated: true, completion: nil)
     }
 }
-
+// MARK: UITextFieldDelegate
 extension AddViewController : UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         self.pickerView1.removeFromSuperview()
